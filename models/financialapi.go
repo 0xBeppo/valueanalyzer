@@ -66,8 +66,6 @@ func (f *FinancialApi) GetLastPrice(ticker string) float64 {
 	}
 	lastPrice := response.TimeSeries1Min[response.MetaData.LastRefreshed].Close
 
-	log.Printf("Last price: %s", lastPrice)
-
 	price, err := strconv.ParseFloat(lastPrice, 64)
 	if err != nil {
 		log.Fatalf("failed to convert last price to float: %v", err)
@@ -145,7 +143,23 @@ func (f *FinancialApi) CalculateNetDebt(ticker string) int {
 	return netDebt
 }
 
-func (f *FinancialApi) CalculateEnterpriseValue(ticker string) int {
+func (f *FinancialApi) CalculateEnterpriseValue(ticker string) float64 {
+	stock := f.GetOverview(ticker)
 
-	return 0
+	lastPrice := f.GetLastPrice(ticker)
+	log.Printf("Last Price: %f", lastPrice)
+
+	nShares, err := strconv.ParseFloat(stock.SharesOutstanding, 64)
+	if err != nil {
+		log.Fatalf("failed to convert shares outstanding to int: %v", err)
+	}
+	log.Printf("Shares Outstanding: %f", nShares)
+
+	mktcap := nShares * lastPrice
+
+	log.Printf("Market Cap: %f", mktcap)
+
+	enterpriseValue := mktcap + float64(f.CalculateNetDebt(ticker))
+
+	return enterpriseValue
 }

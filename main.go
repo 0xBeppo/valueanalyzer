@@ -9,17 +9,8 @@ func main() {
 
 	financialApi := models.NewFinancialApi()
 
-	lastPrice := financialApi.GetLastPrice("AAPL")
-	log.Printf("Last Price: %f", lastPrice)
+	ev := financialApi.CalculateEnterpriseValue("AAPL")
 
-	overview := financialApi.GetOverview("AAPL")
-
-	log.Printf("Overview: %v", overview)
-
-	eps := financialApi.GetEPS("AAPL")
-
-	log.Printf("EPS: %f", eps)
-
-	//url := fmt.Sprintf("%s?function=GLOBAL_QUOTE&symbol=AAPL&apikey=%s", BASE_URL, API_KEY)
+	log.Printf("EV: %f", ev)
 
 }
